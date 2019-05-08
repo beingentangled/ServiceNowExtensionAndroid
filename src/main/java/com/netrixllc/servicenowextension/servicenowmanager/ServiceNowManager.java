@@ -2,6 +2,7 @@ package com.netrixllc.servicenowextension.servicenowmanager;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.netrixllc.servicenowextension.datamanager.models.GetAttachmentResponse;
@@ -19,6 +20,7 @@ public class ServiceNowManager implements MainContract.ServiceNowInterface, File
     private MainContract.presenter presenter;
     private File mIncidentFile;
     private Activity mActivity;
+    private uploadSuccessListener listener;
 
     public ServiceNowManager(String mUserName, String mPassword, Activity activity) {
         presenter = new MainPresenterImpl(this, new GetServiceNowInteractImpl(), mUserName, mPassword, activity);
@@ -37,6 +39,7 @@ public class ServiceNowManager implements MainContract.ServiceNowInterface, File
     @Override
     public void showUploadResult(GetAttachmentResponse attachmentResponse) {
         Toast.makeText(mActivity, "Upload Success", Toast.LENGTH_SHORT).show();
+        listener.onUploadSuccess();
         mIncidentFile = null;
     }
 
@@ -58,5 +61,17 @@ public class ServiceNowManager implements MainContract.ServiceNowInterface, File
 
     public boolean isFileSelected() {
         return mIncidentFile != null;
+    }
+
+    public void setListener(uploadSuccessListener listener) {
+        this.listener = listener;
+    }
+
+    public uploadSuccessListener getListener() {
+        return listener;
+    }
+
+    public interface uploadSuccessListener{
+        void onUploadSuccess();
     }
 }
